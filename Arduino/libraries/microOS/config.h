@@ -1,2 +1,2 @@
 
-#undef MICROOS_SLIM
+#define MICROOS_SLIM
