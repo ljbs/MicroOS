@@ -12,7 +12,7 @@ class ProtocolInterface
 public:
     virtual bool decode(uint8_t b) = 0;
     virtual uint16_t encode(void* msg, uint8_t* buffer) = 0;
-    
+
     virtual uint32_t getPacketsReceived() = 0;
     virtual uint32_t getPacketsDropped() = 0;
     virtual void* getMessage() = 0;

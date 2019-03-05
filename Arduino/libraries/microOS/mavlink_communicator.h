@@ -25,8 +25,10 @@ protected:
 	virtual void sendMessage(mavlink_message_t &msg);
 	virtual bool handleMessage(mavlink_message_t &msg);
 
+#ifndef MICROOS_SLIM
 	virtual void handleEvent(uint16_t event);
 	virtual void handlePartition(const mavlink_partition_t &partition);
+#endif
 
 public:
 	MavlinkCommunicator(const uint8_t id, const uint8_t type, HALBase *hal);
@@ -39,12 +41,15 @@ public:
 	virtual void sendThreadInfo(uint8_t ID, uint8_t priority,
 						uint32_t duration, uint32_t latency,
 						uint32_t total_duration, uint32_t total_latency, uint32_t number_of_executions);
-	virtual void sendGPIO();
+#ifdef MICROOS_SLIM
   virtual void sendSlimIO();
+#else
+	virtual void sendGPIO();
 	virtual void sendEvent(uint16_t event);
 	virtual void sendPrint(const char *text);
-    virtual void sendIntParam(const String& name, const uint16_t offset, const int32_t value);
-    virtual void sendFloatParam(const String& name, const uint16_t offset, const float value);
+  virtual void sendIntParam(const String& name, const uint16_t offset, const int32_t value);
+  virtual void sendFloatParam(const String& name, const uint16_t offset, const float value);
+#endif
 };
 
 #endif //MAVLINK_COMMUNICATOR_H

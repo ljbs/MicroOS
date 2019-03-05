@@ -8,7 +8,7 @@ int countingTask(void)
 {
 	counter += increment;
 	System.setGPoutInt(0,counter);
-	
+
 	return 0;
 }
 
@@ -16,7 +16,7 @@ int sensorTask(void)
 {
 	sensor = analogRead(A0);
 	System.setGPoutInt(1,sensor);
-	
+
 	return 0;
 }
 
@@ -24,7 +24,7 @@ int readIncrement(void)
 {
 	increment = System.getGPinInt(0);
 	System.setGPoutFloat(0,increment);
-	
+
 	return 0;
 }
 
@@ -41,4 +41,3 @@ void loop()
 {
 	System.run(RESCHEDULED); //
 }
-

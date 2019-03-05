@@ -1,5 +1,5 @@
 #include "channel.h"
-#include "microOS.h"
+// #include "microOS.h"
 
 Channel::Channel(Stream *port, ProtocolInterface *protocol) :
 	 _active(false), _port(port), _protocol(protocol)

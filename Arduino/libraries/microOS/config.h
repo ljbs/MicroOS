@@ -1,0 +1,2 @@
+
+#undef MICROOS_SLIM

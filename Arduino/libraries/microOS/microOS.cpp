@@ -49,7 +49,7 @@ int microOSSlowLoop(void)
         case 2:
             System.sendNextThreadInfo();
             break;
-            
+
 		default:
 #ifndef MICROOS_NOPRINT
 			System.write();
@@ -59,7 +59,7 @@ int microOSSlowLoop(void)
 
 	if(++slowhook_splitcounter > 10)
 		slowhook_splitcounter = 0;
-	
+
 	return 0;
 }
 
@@ -103,8 +103,10 @@ void MicroOS::start(const start_t mode)
 		_communicator = new MavlinkCommunicator(45,20,_hal);
 	_communicator->init();
 
+#ifndef MICROOS_SLIM
     // Read all data from the eeprom
     loadAllParameters();
+#endif
 
 	// Add the different standard threads
 	if((_config & MICROOS_SLOW_DISABLE) == 0)
@@ -317,6 +319,7 @@ void MicroOS::sendAllThreadInfo(void)
 		_communicator->sendThreadInfo(_threads[k]->getID(), _threads[k]->getPriority(), _threads[k]->getDuration(), _threads[k]->getLatency(), _threads[k]->getTotalDuration(), _threads[k]->getTotalLatency(), _threads[k]->getNumberOfExecutions());
 }
 
+#ifndef MICROOS_SLIM
 void MicroOS::sendAllParameters(void)
 {
     forward_iterator<Parami*> i = _int_storage.begin();
@@ -345,23 +348,10 @@ void MicroOS::loadAllParameters(void)
     _float_storage.load();
 }
 
-float* MicroOS::getGPinFloat(void)
-{
-	return _gpin_float;
-}
 
 int32_t* MicroOS::getGPinInt(void)
 {
 	return _gpin_int;
-}
-
-float MicroOS::getGPinFloat(uint8_t index)
-{
-	if(index<MICROOS_DEBUG_FLOAT_SIZE){
-		return _gpin_float[index];
-	} else {
-		return 0.0f;
-	}
 }
 
 int32_t MicroOS::getGPinInt(uint8_t index)
@@ -373,13 +363,6 @@ int32_t MicroOS::getGPinInt(uint8_t index)
 	}
 }
 
-void MicroOS::setGPinFloat(uint8_t index, float value)
-{
-	if(index<MICROOS_DEBUG_FLOAT_SIZE){
-		_gpin_float[index] = value;
-	}
-}
-
 void MicroOS::setGPinInt(uint8_t index, int32_t value)
 {
 	if(index<MICROOS_DEBUG_INT_SIZE){
@@ -387,23 +370,9 @@ void MicroOS::setGPinInt(uint8_t index, int32_t value)
 	}
 }
 
-float* MicroOS::getGPoutFloat(void)
-{
-	return _gpout_float;
-}
-
 int32_t* MicroOS::getGPoutInt(void)
 {
 	return _gpout_int;
-}
-
-float MicroOS::getGPoutFloat(uint8_t index)
-{
-	if(index<MICROOS_DEBUG_FLOAT_SIZE){
-		return _gpout_float[index];
-	} else {
-		return 0.0f;
-	}
 }
 
 int32_t MicroOS::getGPoutInt(uint8_t index)
@@ -415,17 +384,54 @@ int32_t MicroOS::getGPoutInt(uint8_t index)
 	}
 }
 
-void MicroOS::setGPoutFloat(uint8_t index, float value)
-{
-	if(index<MICROOS_DEBUG_FLOAT_SIZE){
-		_gpout_float[index] = value;
-	}
-}
-
 void MicroOS::setGPoutInt(uint8_t index, int32_t value)
 {
 	if(index<MICROOS_DEBUG_INT_SIZE){
 		_gpout_int[index] = value;
+	}
+}
+#endif
+
+float* MicroOS::getGPinFloat(void)
+{
+	return _gpin_float;
+}
+
+
+float MicroOS::getGPinFloat(uint8_t index)
+{
+	if(index<MICROOS_DEBUG_FLOAT_SIZE){
+		return _gpin_float[index];
+	} else {
+		return 0.0f;
+	}
+}
+
+void MicroOS::setGPinFloat(uint8_t index, float value)
+{
+	if(index<MICROOS_DEBUG_FLOAT_SIZE){
+		_gpin_float[index] = value;
+	}
+}
+
+float* MicroOS::getGPoutFloat(void)
+{
+	return _gpout_float;
+}
+
+float MicroOS::getGPoutFloat(uint8_t index)
+{
+	if(index<MICROOS_DEBUG_FLOAT_SIZE){
+		return _gpout_float[index];
+	} else {
+		return 0.0f;
+	}
+}
+
+void MicroOS::setGPoutFloat(uint8_t index, float value)
+{
+	if(index<MICROOS_DEBUG_FLOAT_SIZE){
+		_gpout_float[index] = value;
 	}
 }
 
@@ -471,6 +477,7 @@ size_t MicroOS::write(const uint8_t *buffer, size_t size)
 	return size;
 }
 #else
+#ifndef MICROOS_SLIM
 void MicroOS::println(const char *text)
 {
 	_communicator->sendPrint(text);
@@ -493,4 +500,5 @@ void MicroOS::println(const __FlashStringHelper *text)
 	println(buffer);
 	//return n;
 }
+#endif
 #endif

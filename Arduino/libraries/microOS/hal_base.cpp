@@ -14,7 +14,7 @@ bool HALBase::init()
 
 	// Toggle led
 	onboardLedToggle();
-	
+
 	return true;
 }
 
@@ -27,7 +27,7 @@ void HALBase::onboardLedToggle()
 {
 	_onboard_led_state = !_onboard_led_state;
 	digitalWrite(_onboard_led_pin, _onboard_led_state);
-}	
+}
 
 Stream* HALBase::getSerial(int index)
 {

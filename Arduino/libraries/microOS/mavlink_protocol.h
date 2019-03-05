@@ -2,7 +2,7 @@
 #define MAVLINK_PROTOCOL_H
 
 #include "protocol_interface.h"
-#include "mavlink.h"
+#include "mavlink_selector.h"
 
 class MavlinkProtocol : public ProtocolInterface
 {
@@ -12,13 +12,13 @@ private:
 
 public:
 	MavlinkProtocol();
-	
+
 	bool decode(uint8_t b);
 	uint16_t encode(void* msg, uint8_t *buffer);
-	
+
 	uint32_t getPacketsReceived();
 	uint32_t getPacketsDropped();
-	
+
 	void* getMessage();
 };
 
