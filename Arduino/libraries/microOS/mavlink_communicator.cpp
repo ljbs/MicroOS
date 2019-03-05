@@ -1,9 +1,6 @@
 #include "mavlink_communicator.h"
 
-MavlinkCommunicator::MavlinkCommunicator(const uint8_t id, const uint8_t type, HALBase *hal) :
-	_hal(hal),
-	_id(id),
-	_type(type),
+MavlinkCommunicator::MavlinkCommunicator(const uint8_t id, const uint8_t type, HALBase *hal) : _hal(hal), _id(id), _type(type),
 #ifdef SINGLE_CHANNEL
 	_channels({Channel(hal->getPrimarySerial(), new MavlinkProtocol)})
 #else
@@ -39,7 +36,11 @@ void MavlinkCommunicator::sendMessage(mavlink_message_t &msg)
 
 void MavlinkCommunicator::transmit()
 {
+#ifdef MICROOS_SLIM
+  sendSlimIO();
+#else
 	sendGPIO();
+#endif
 }
 
 void MavlinkCommunicator::sendHeartbeat()
@@ -63,17 +64,30 @@ void MavlinkCommunicator::sendGPIO()
 {
 	mavlink_message_t msg;
 	mavlink_gpio_t gpio;
-	
+
 	unsigned int k;
 	gpio.time = millis();
 	for(k=0;k<4;k++)
 		gpio.gpio_int[k] = System.getGPoutInt(k);
 	for(k=0;k<8;k++)
 		gpio.gpio_float[k] = System.getGPoutFloat(k);
-	
+
 	mavlink_msg_gpio_encode(_id, 0, &msg, &gpio);
 
 	sendMessage(msg);
+}
+
+void MavlinkCommunicator::sendSlimIO() {
+  mavlink_message_t msg;
+  mavlink_slim_io_t slim;
+
+  unsigned int k;
+  slim.time = millis();
+  for(k=0; k<4; k++) slim.io[k] = System.getGPOutFloat(k);
+
+  mavlink_msg_slim_io_encode(_id, 0, &msg, &slim);
+  
+  sendMessage(msg);
 }
 
 void MavlinkCommunicator::sendEvent(uint16_t event)
@@ -155,7 +169,7 @@ bool MavlinkCommunicator::handleMessage(mavlink_message_t &msg)
 
 			handleEvent(event.type);
 			break;}
-			
+
 		case MAVLINK_MSG_ID_PARTITION:{
 			mavlink_partition_t partition;
 			mavlink_msg_partition_decode(&msg,&partition);

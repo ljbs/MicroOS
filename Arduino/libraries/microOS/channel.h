@@ -17,18 +17,18 @@ class Channel
 {
 private:
 	bool _active;
-	
+
 	Stream *_port;
 	ProtocolInterface *_protocol;
 
 public:
-	Channel(Stream *port, ProtocolInterface* protocol);		
-  
+	Channel(Stream *port, ProtocolInterface* protocol);
+
     void start();
     void stop();
-    bool receive(); 
+    bool receive();
     bool send(void *msg);
-        
+
     bool getActive();
     Stream* getPort();
     ProtocolInterface* getProtocol();
