@@ -49,7 +49,7 @@ int microOSSlowLoop(void)
         case 2:
             System.sendNextThreadInfo();
             break;
-            
+
 		default:
 #ifndef MICROOS_NOPRINT
 			System.write();
@@ -59,7 +59,7 @@ int microOSSlowLoop(void)
 
 	if(++slowhook_splitcounter > 10)
 		slowhook_splitcounter = 0;
-	
+
 	return 0;
 }
 
@@ -336,7 +336,7 @@ void MicroOS::storeAllParameters(void)
 {
     _int_storage.store();
     _float_storage.store();
-    System.println(F("Saving to eeprom"));
+    System.println("Saving to eeprom");
 }
 
 void MicroOS::loadAllParameters(void)
