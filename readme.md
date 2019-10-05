@@ -1,10 +1,10 @@
-meco-group# MicroOS
+# MicroOS
 
 A lightweight operating system for Arduino.
 
 MicroOS has two main goals:
-1. make multitasking easy (cfr. `System.addThread()`)
-2. speed up embedded development (cfr. `System.setGPoutInt()`)
+1. Make multitasking easy (cfr. `System.addThread()`)
+2. Speed up embedded development (cfr. `System.setGPoutInt()`)
 
 ## Getting started
 
