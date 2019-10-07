@@ -39,7 +39,7 @@ void MavlinkCommunicator::sendMessage(mavlink_message_t &msg)
 
 void MavlinkCommunicator::transmit()
 {
-	sendGPIO();
+	sendGPIOX();
 }
 
 void MavlinkCommunicator::sendHeartbeat()
@@ -63,15 +63,30 @@ void MavlinkCommunicator::sendGPIO()
 {
 	mavlink_message_t msg;
 	mavlink_gpio_t gpio;
-	
+
 	unsigned int k;
 	gpio.time = millis();
 	for(k=0;k<4;k++)
 		gpio.gpio_int[k] = System.getGPoutInt(k);
 	for(k=0;k<8;k++)
 		gpio.gpio_float[k] = System.getGPoutFloat(k);
-	
+
 	mavlink_msg_gpio_encode(_id, 0, &msg, &gpio);
+
+	sendMessage(msg);
+}
+
+void MavlinkCommunicator::sendGPIOX()
+{
+	mavlink_message_t msg;
+	mavlink_gpiox_t gpiox;
+
+	unsigned int k;
+	gpiox.time = millis();
+	for(k=0; k<MAVLINK_MSG_GPIOX_FIELD_GPIO_FLOAT_LEN; k++)
+		gpiox.gpio_float[k] = System.getGPoutFloat(k);
+
+	mavlink_msg_gpiox_encode(_id, 0, &msg, &gpiox);
 
 	sendMessage(msg);
 }
@@ -149,13 +164,23 @@ bool MavlinkCommunicator::handleMessage(mavlink_message_t &msg)
 			//System.println("Received gpio message.");
 			break;}
 
+		case MAVLINK_MSG_ID_GPIOX: {
+			mavlink_gpiox_t gpiox;
+			mavlink_msg_gpiox_decode(&msg, &gpiox);
+
+			unsigned int k;
+			for(k=0; k<MAVLINK_MSG_GPIOX_FIELD_GPIO_FLOAT_LEN; k++)
+				System.setGPinFloat(k, gpiox.gpio_float[k]);
+			break;
+		}
+
 		case MAVLINK_MSG_ID_EVENT:{
 			mavlink_event_t event;
 			mavlink_msg_event_decode(&msg,&event);
 
 			handleEvent(event.type);
 			break;}
-			
+
 		case MAVLINK_MSG_ID_PARTITION:{
 			mavlink_partition_t partition;
 			mavlink_msg_partition_decode(&msg,&partition);

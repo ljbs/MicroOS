@@ -74,7 +74,7 @@
     <message id="14" name="GPIOX">
       <description>Message to exchange general purpose IO signals</description>
       <field type="uint32_t" name="time">Time at which the message was sent</field>
-      <field type="float[16]" name="gpio_float">16 gpio floating point values</field>
+      <field type="float[12]" name="gpio_float">12 gpio floating point values</field>
     </message>
   </messages>
 </mavlink>
