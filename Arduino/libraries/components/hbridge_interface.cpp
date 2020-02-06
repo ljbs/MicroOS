@@ -67,3 +67,6 @@ int16_t HBridgeInterface::getPWM()
 {
 	return _pwm;
 }
+
+void standby_on() { }
+void standby_off() { }

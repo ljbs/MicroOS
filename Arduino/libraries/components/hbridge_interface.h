@@ -28,8 +28,8 @@ class HBridgeInterface : public ComponentInterface
 		bool getPolarity();
 		int16_t getPWM();
 
-    virtual void standby_on();
-    virtual void standby_off();
+    void standby_on();
+    void standby_off();
 };
 
 #endif //HBRIDGE_INTERFACE
